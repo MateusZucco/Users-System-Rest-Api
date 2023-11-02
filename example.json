@@ -1,0 +1,19 @@
+// user:
+{
+  "id": 1,
+  "name": "Mateus",
+  "profile": {
+    "name": "Admin",
+    "description": "Is like god",
+    "permissions": [
+      {
+        "id": 1,
+        "description": "Edit users"
+      },
+      {
+        "id": 2,
+        "description": "Delete users"
+      }
+    ]
+  }
+}
