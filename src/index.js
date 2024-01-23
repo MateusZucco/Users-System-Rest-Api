@@ -2,7 +2,14 @@ const express = require("express");
 const app = express();
 const port = process.env.port || 3000;
 
+const routes = require("./routes");
 
-app.listen(port, () => {
-  console.log(`Login service listening on port ${port}`);
+const db = require("./connection");
+
+app.listen(port, async() => {
+  db.connect();
+  
+  console.log(`User service listening on port ${port}`);
 });
+
+app.use("/", routes);
