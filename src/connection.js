@@ -21,46 +21,29 @@ module.exports = {
     return connection;
   },
 
-  query: async function query(query) {
+  query: async function (query) {
     const conn = await this.connect();
     const [rows] = await conn.query(query);
     return rows;
   },
 
-  promise: async function query(queries) {
+  transaction: async function (queries) {
     const conn = await this.connect();
-    const rows = await conn.beginTransaction(async (err) => {
-      if (err) {
-        throw err;
-      }
+    try {
+      await conn.beginTransaction();
+      const queryPromises = [];
 
-      for await (query of queries) {
-        if (!query) {
-          return noMoreRows();
-        }
-
-        conn.query(query, (err) => {
-          if (err) {
-            conn.rollback(() => {
-              throw err;
-            });
-          }
-        });
-      }
-
-      let noMoreRows = () => {
-        conn.commit((err) => {
-          if (err) {
-            conn.rollback(() => {
-              throw err;
-            });
-          }
-          console.log("success!");
-        });
-      };
-    });
-
-    console.log(rows);
-    return rows;
+      queries.forEach((query) => {
+        queryPromises.push(conn.query(query));
+      });
+      const results = await Promise.all(queryPromises);
+      await conn.commit();
+      await conn.end();
+      return results;
+    } catch (err) {
+      await connection.rollback();
+      await connection.end();
+      return Promise.reject(err);
+    }
   },
 };
