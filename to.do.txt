@@ -1,8 +1,0 @@
-package
-    build command
-    test command
-
-express
-    middleware
-    melhores praticas de performance
-    melhores praticas de segurança 
