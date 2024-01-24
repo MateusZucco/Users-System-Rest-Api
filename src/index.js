@@ -6,10 +6,12 @@ const routes = require("./routes");
 
 const db = require("./connection");
 
-app.listen(port, async() => {
+app.use(express.json())
+
+app.listen(port, async () => {
   db.connect();
-  
+
   console.log(`User service listening on port ${port}`);
 });
 
-app.use("/", routes);
+app.use("/user", routes.user);
