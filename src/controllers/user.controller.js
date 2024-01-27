@@ -31,7 +31,7 @@ exports.login = async (req, res) => {
     try {
         verifyParams(data, ['email', 'password']);
 
-        const user = await UserModel.findByEmail(data);
+        const user = await UserModel.getByEmail(data.email);
 
         if (!user) res.status(404).err({ msg: 'User not found' });
 
