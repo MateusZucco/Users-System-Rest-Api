@@ -6,8 +6,8 @@ USE `users_schema`;
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `user_id` INT(11) UNIQUE AUTO_INCREMENT NOT NULL,
-  `email` TEXT NOT NULL,
-  `password` VARBINARY(100) NOT NULL,
+  `email` TEXT NOT NULL UNIQUE,
+  `password` VARCHAR(200) NOT NULL,
   `first_name` VARCHAR(50) NOT NULL,
   `last_name` VARCHAR(50) NOT NULL,
   `age` INT(3) NOT NULL,
