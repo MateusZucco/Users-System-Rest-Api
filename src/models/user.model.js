@@ -2,7 +2,7 @@ const { query } = require('../connection');
 
 exports.getAll = async () => {
     try {
-        return await query(`
+        const response = await query(`
             SELECT 
                 user_id AS userId,
                 email,
@@ -15,6 +15,7 @@ exports.getAll = async () => {
                 updated_at AS updatedAt
             FROM users
         `);
+        return response;
     } catch (error) {
         return error;
     }
@@ -43,7 +44,7 @@ exports.getById = async (id) => {
 
 exports.getByEmail = async (email) => {
     try {
-        return await query(`
+        const response = await query(`
             SELECT 
                 user_id AS userId,
                 email,
@@ -55,21 +56,25 @@ exports.getByEmail = async (email) => {
                 created_at AS createdAt,
                 updated_at AS updatedAt
             FROM users 
-            WHERE users.email LIKE ${email}
+            WHERE users.email LIKE "${email}"
         `);
+        return response[0];
     } catch (error) {
-        return error;
+        throw error;
     }
 };
 
 exports.create = async (data) => {
     try {
-        return await query(`
-            INSERT INTO users (email, password, first_name, last_name, age, profile_id)
-            VALUES ${(data.email, data.password, data.firstName, data.lastName, data.age, data.profileId)}
+        const response = await query(`
+                INSERT INTO users (email, password, first_name, last_name, age, profile_id)
+                VALUES ("${data.email}", "${data.password}", "${data.firstName}", "${data.lastName}", ${data.age}, ${
+            data.profileId || null
+        })
         `);
+        return response;
     } catch (error) {
-        return error;
+        throw error;
     }
 };
 
