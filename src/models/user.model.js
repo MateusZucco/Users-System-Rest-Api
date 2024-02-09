@@ -23,7 +23,7 @@ exports.getAll = async () => {
 
 exports.getById = async (id) => {
     try {
-        return await query(`
+        const response = await query(`
             SELECT  
                 user_id AS userId,
                 email,
@@ -37,6 +37,7 @@ exports.getById = async (id) => {
             FROM users 
             WHERE user_id = ${id}
         `);
+        return response[0];
     } catch (error) {
         return error;
     }

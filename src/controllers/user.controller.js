@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const UserModel = require('../models/user.model');
+const CryptUsers = require('../utils/cryptUsers');
 
 exports.create = async (req, res) => {
     let data = { ...req.body };
@@ -48,7 +49,7 @@ exports.login = async (req, res) => {
             { userId: user.userId },
             secret,
             {
-                expiresIn: process.env.JWT_EXPIRES_IN || '1m',
+                expiresIn: process.env.JWT_EXPIRES_IN || '3h',
             },
             (err, token) => {
                 if (err) throw err;
@@ -56,41 +57,46 @@ exports.login = async (req, res) => {
             }
         );
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 };
 
 exports.getAll = async (req, res) => {
     try {
-        let users = await UserModel.getAll();
-        users = await encryptUser(users);
-        res.status(200).json(users);
+        const users = await UserModel.getAll();
+
+        let encryptedUsers = [];
+        users.forEach((user) => {
+            encryptedUsers.push(CryptUsers.encryptUser(user));
+        });
+
+        res.status(200).json(encryptedUsers);
     } catch (err) {
         res.status(500).send(err);
     }
 };
 
-async function encryptUser(users) {
-    const encryptedUsers = [];
-    for await (const user of users) {
-        const newUser = { ...user };
+exports.getById = async (req, res) => {
+    try {
+        const { userId } = req.params;
 
-        newUser.email = await new Promise((resolve, reject) => {
-            bcrypt.hash(user.email, 12, async (err, hash) => {
-                if (err) reject(err);
-                resolve(hash);
-            });
-        });
-
-        newUser.userId = await new Promise((resolve, reject) => {
-            bcrypt.hash(user.userId.toString(), 12, async (err, hash) => {
-                if (err) reject(err);
-                resolve(hash);
-            });
-        });
-
-        encryptedUsers.push(newUser);
+        let users = await UserModel.getById(userId);
+        users = CryptUsers.encryptUser(users);
+        res.status(200).json(users);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
     }
+};
 
-    return [...encryptedUsers];
-}
+exports.getByEmail = async (req, res) => {
+    try {
+        const { email } = req.params;
+        let users = await UserModel.getByEmail(email);
+        users = CryptUsers.encryptUser(users);
+        res.status(200).json(users);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+};
