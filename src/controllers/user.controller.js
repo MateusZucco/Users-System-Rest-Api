@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const UserModel = require('../models/user.model');
-const { encryptUser } = require('../utils/cryptUsers');
+// const { encryptUser } = require('../utils/cryptUsers');
 
 exports.create = async (req, res) => {
     let data = { ...req.body };
@@ -28,7 +28,7 @@ exports.create = async (req, res) => {
                 throw err;
             });
     } catch (err) {
-        res.status(500).send(err);
+        res.status(500).send({ message: err });
     }
 };
 
@@ -57,7 +57,7 @@ exports.login = async (req, res) => {
             { userId: user.userId },
             secret,
             {
-                expiresIn: process.env.JWT_EXPIRES_IN || '1m',
+                expiresIn: process.env.JWT_EXPIRES_IN || '2h',
             },
             (err, token) => {
                 if (err) throw err;
@@ -66,22 +66,21 @@ exports.login = async (req, res) => {
         );
     } catch (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({ message: err });
     }
 };
 
 exports.getAll = async (req, res) => {
     try {
-        const users = await UserModel.getAll();
+        let users = await UserModel.getAll();
 
-        let encryptedUsers = [];
-        users.forEach((user) => {
-            encryptedUsers.push(encryptUser(user));
-        });
+        // [...users].forEach((user) => {
+        //     users.push(encryptUser(user));
+        // });
 
-        res.status(200).json(encryptedUsers);
+        res.status(200).json(users);
     } catch (err) {
-        res.status(500).send(err);
+        res.status(500).send({ message: err });
     }
 };
 
@@ -89,22 +88,63 @@ exports.getById = async (req, res) => {
     try {
         const { userId } = req.params;
 
+        if (!userId) {
+            res.status(200).json({ message: "User id can't be null" });
+        }
+
         let users = await UserModel.getById(userId);
-        users = encryptUser(users);
+        // users = encryptUser(users);
         res.status(200).json(users);
     } catch (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({ message: err });
     }
 };
 
 exports.getByEmail = async (req, res) => {
     try {
         const { email } = req.params;
+
+        if (!email) {
+            res.status(200).json({ message: "User email can't be null" });
+        }
+
         let users = await UserModel.getByEmail(email);
-        users = encryptUser(users);
+        // users = encryptUser(users);
         res.status(200).json(users);
     } catch (err) {
-        res.status(500).send(err);
+        res.status(500).send({ message: err });
+    }
+};
+
+exports.update = async (req, res) => {
+    const { userId } = req.params;
+    const data = { ...req.body };
+
+    try {
+        if (!userId) {
+            res.status(200).json({ message: "User id can't be null" });
+        }
+
+        verifyParams(data, ['email', 'firstName', 'lastName', 'age', 'status']);
+
+        const response = await UserModel.update(data, userId);
+        res.status(200).json({ response, message: 'User updated!' });
+    } catch (err) {
+        res.status(500).send({ message: err });
+    }
+};
+
+exports.delete = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        if (!userId) {
+            res.status(200).json({ message: "User id can't be null" });
+        }
+        const response = await UserModel.delete(userId);
+        res.status(200).json({ response, message: 'User deleted!' });
+    } catch (err) {
+        res.status(500).send({ message: err });
     }
 };

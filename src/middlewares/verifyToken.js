@@ -2,31 +2,35 @@ const jwt = require('jsonwebtoken');
 const UserModel = require('../models/user.model');
 
 const verifyToken = async (req, res, next) => {
-    req.user = undefined;
-    
-    if ('headers' in req && 'authorization' in req.headers && req.headers['authorization'].split(' ')[1]) {
-        const authHeader = req.headers['authorization'];
-        const token = authHeader && authHeader.split(' ')[1];
+    try {
+        req.user = undefined;
 
-        jwt.verify(token, process.env.JWT_SECRET || '12345abcde!@#$%', async function (err, decode) {
-            if (err || !decode) {
-                throw 'Token expired';
-            }
+        if ('headers' in req && 'authorization' in req.headers && req.headers['authorization'].split(' ')[1]) {
+            const authHeader = req.headers['authorization'];
+            const token = authHeader && authHeader.split(' ')[1];
 
-            const user = await UserModel.getById(decode.userId);
+            jwt.verify(token, process.env.JWT_SECRET || '12345abcde!@#$%', async function (err, decode) {
+                if (err || !decode) {
+                    throw 'Token expired';
+                }
 
-            if (!user) {
-                throw 'Invalid token';
-            }
+                const user = await UserModel.getById(decode.userId);
 
-            req.user = user;
+                if (!user) {
+                    throw 'Invalid token';
+                }
 
-            next();
-        });
-    } else {
-        res.status(401).send({
-            message: 'User without token',
-        });
+                req.user = user;
+
+                next();
+            });
+        } else {
+            res.status(401).send({
+                message: 'User without token',
+            });
+        }
+    } catch (err) {
+        res.status(500).send(err);
     }
 };
 

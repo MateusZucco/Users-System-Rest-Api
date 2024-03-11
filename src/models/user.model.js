@@ -10,6 +10,7 @@ exports.getAll = async () => {
                 first_name AS fName,
                 last_name AS lName,
                 age,
+                status,
                 profile_id AS profileId,
                 created_at AS createdAt,
                 updated_at AS updatedAt
@@ -31,6 +32,7 @@ exports.getById = async (id) => {
                 first_name AS fName,
                 last_name AS lName,
                 age,
+                status,
                 profile_id AS profileId,
                 created_at AS createdAt,
                 updated_at AS updatedAt
@@ -53,6 +55,7 @@ exports.getByEmail = async (email) => {
                 first_name AS fName,
                 last_name AS lName,
                 age,
+                status,
                 profile_id AS profileId,
                 created_at AS createdAt,
                 updated_at AS updatedAt
@@ -79,19 +82,20 @@ exports.create = async (data) => {
     }
 };
 
-exports.update = async (data) => {
+exports.update = async (data, userId) => {
     try {
-        return await query(`
+        const response = await query(`
             UPDATE users 
             SET 
-                email = ${data.email}, 
-                password = ${data.password}, 
-                first_name = ${data.fName}, 
-                last_name = ${data.lName}, 
+                email = "${data.email}", 
+                first_name = "${data.firstName}", 
+                last_name = "${data.lastName}", 
                 age = ${data.age}, 
-                profile_id = ${data.profileId}
-            WHERE user_id = ${data.userId}
+                status = "${data.status}", 
+                profile_id = ${data.profileId || null}
+            WHERE user_id = ${userId}
         `);
+        return response;
     } catch (error) {
         return error;
     }
