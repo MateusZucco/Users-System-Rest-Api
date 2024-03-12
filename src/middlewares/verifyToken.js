@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 const UserModel = require('../models/user.model');
 
 const verifyToken = async (req, res, next) => {
-    try {
         req.user = undefined;
 
         if ('headers' in req && 'authorization' in req.headers && req.headers['authorization'].split(' ')[1]) {
@@ -29,9 +28,6 @@ const verifyToken = async (req, res, next) => {
                 message: 'User without token',
             });
         }
-    } catch (err) {
-        res.status(500).send(err);
-    }
 };
 
 module.exports = verifyToken;

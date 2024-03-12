@@ -9,24 +9,19 @@ exports.create = async (req, res) => {
     let data = { ...req.body };
     try {
         verifyParams(data, ['email', 'password', 'firstName', 'lastName', 'age']);
-        bcrypt
-            .genSalt(12)
-            .then((salt) => {
-                bcrypt
-                    .hash(data.password, salt)
-                    .then(async (hash) => {
-                        data.password = hash;
+        bcrypt.genSalt(12).then((salt) => {
+            bcrypt
+                .hash(data.password, salt)
+                .then(async (hash) => {
+                    data.password = hash;
 
-                        const response = await UserModel.create(data);
-                        res.status(201).json({ response, message: 'User created!' });
-                    })
-                    .catch((err) => {
-                        throw err;
-                    });
-            })
-            .catch((err) => {
-                throw err;
-            });
+                    const response = await UserModel.create(data);
+                    res.status(201).json({ response, message: 'User created!' });
+                })
+                .catch((err) => {
+                    res.status(500).send({ message: err });
+                });
+        });
     } catch (err) {
         res.status(500).send({ message: err });
     }
@@ -40,7 +35,10 @@ exports.login = async (req, res) => {
 
         const user = await UserModel.getByEmail(data.email);
 
-        if (!user) res.status(404).send({ message: 'User not found' });
+        if (!user) {
+            res.status(404).send({ message: 'User not found' });
+            return;
+        }
 
         await bcrypt
             .compare(data.password, user.password)
@@ -54,10 +52,10 @@ exports.login = async (req, res) => {
         const secret = process.env.JWT_SECRET || '12345abcde!@#$%';
 
         jwt.sign(
-            { userId: user.userId },
+            { userId: user.userId, profileId: user.profileId },
             secret,
             {
-                expiresIn: process.env.JWT_EXPIRES_IN || '2h',
+                expiresIn: process.env.JWT_EXPIRES_IN || '180m',
             },
             (err, token) => {
                 if (err) throw err;
@@ -65,7 +63,6 @@ exports.login = async (req, res) => {
             }
         );
     } catch (err) {
-        console.log(err);
         res.status(500).send({ message: err });
     }
 };

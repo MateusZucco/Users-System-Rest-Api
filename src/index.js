@@ -15,3 +15,4 @@ app.listen(port, async () => {
 });
 
 app.use("/user", routes.user);
+app.use('/profile', routes.profile);

@@ -46,8 +46,9 @@ const connection = {
             await conn.end();
             return results;
         } catch (err) {
-            await connection.rollback();
-            await connection.end();
+            console.log(err);
+            await conn.rollback();
+            await conn.end();
             return Promise.reject(err);
         }
     },
