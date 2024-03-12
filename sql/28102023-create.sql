@@ -50,7 +50,7 @@ CREATE TABLE `permissions` (
 
 ALTER TABLE `users` ADD `fk_user_profile` FOREIGN KEY (`profile_id`) REFERENCES `profiles` (`profile_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
-ALTER TABLE `profile_permission` ADD CONSTRAINT `fk_profile_permission_profile` FOREIGN KEY (`profile_id`) REFERENCES `profiles` (`profile_id`);
+ALTER TABLE `profile_permission` ADD CONSTRAINT `fk_profile_permission_profile` FOREIGN KEY (`profile_id`) REFERENCES `profiles` (`profile_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `profile_permission` ADD CONSTRAINT `fk_profile_permission_permission` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`permission_id`);
 
