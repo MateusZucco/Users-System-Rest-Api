@@ -16,35 +16,32 @@ This is an REST API to managers a users system, including a users CRUD, login sy
  
  #### Users
  
- > *user_id*: User's id.
- > *email*: User's email.
- > *password*: User's password.
- > *first_name*: User's first name.
- > *last_name*: User's last name.
- > *age*: User's age.
- > *status*: User's status [ativo/inativo].
+ > *user_id*: User's id.<br>
+ > *email*: User's email.<br>
+ > *password*: User's password.<br>
+ > *first_name*: User's first name.<br>
+ > *last_name*: User's last name.<br>
+ > *age*: User's age.<br>
+ > *status*: User's status [ativo/inativo].<br>
  > *profile_id*: User's profile id.
  
  #### Profiles
  
- > *profile_id*: Profile's id.
- > *name*: Profile's name.
- > *description*: Profile's description.
+ > *profile_id*: Profile's id.<br>
+ > *name*: Profile's name.<br>
+ > *description*: Profile's description.<br>
  > *status*: Profile's status [ativo/inativo].
  
  #### Permissions
  
- > *permission_id*: Permission's id.
+ > *permission_id*: Permission's id.<br>
  > *description*: Permission's desription.
  
- ### Relations
-   A User has one Profile
-   <br>
-   A Profile has many Users
-   <br>
-   A Profile has many Permissions
-   <br>
-   A Permission has many Profiles
+  #### Database Relations
+   > A User has one Profile <br>
+   > A Profile has many Users <br>
+   > A Profile has many Permissions <br>
+   > A Permission has many Profiles <br>
 
 ## Getting Started
 
