@@ -1,47 +1,94 @@
-https://dbdiagram.io/d/users_diagram-654324357d8bbd646551dba3
+# Users System API
 
-//DB
-REFERENCE: https://gist.githubusercontent.com/thiamsantos/654ec002f04c86d53611923a8b4c3a65/raw/d34b2661d911720059239c4f9932e49b43c6a953/db-conventions.md
-# Convenções de nomenclatura para banco de dados
+This is an API to managers a users system, including a users CRUD, login system, encrypt password, JWT token, middleware of user permissions and middleware of token verification.
 
-## Geral
+ ## About this project
+ 
+ In this repository you will find a REST API, built with [Node.js](https://nodejs.org/en/), [Express](https://expressjs.com/), [MySql](https://www.mysql.com/), with the main objective of manager users and login with security and generata a permission system for this users.
+  
+## Getting Started
 
-Os nomes das tabelas e colunas devem estar **minúsculas** e as palavras devem ser separadas por **underscore**, seguindo o padrão [snake case](https://en.wikipedia.org/wiki/Snake_case). E todos os termos devem estar em inglês, exceto alguns termos que não há tradução apropriada para o **inglês**. 
-Sempre prefira nomes descritivos, evitando ao máximo contrações.
+### Prerequisites
 
-## Tabelas
+To run this API in the development mode, you'll need to have a environment with NodeJS installed and you'll need to have a MYSQL database running on your machine.
 
-Os nomes das tabelas devem estar no **plural**.
+### Environment variables example
+Create a .env file to save yours environment variables, like this:
 
-Ex:
-- **Bom**: `users`, `posts`, `roles`, `room_categories`
-- **Ruim**: `user`, `post`, `grupos`, `quarto_categoria`
+```
+PORT="3000",
 
-## Colunas
+JWT_EXPIRES_IN="180m",
+JWT_SECRET="12345abcde!@#$%",
 
-Os nomes das colunas devem estar no **singular**.
+DB_NAME="my_db_name",
+DB_USER="my_db_username",
+DB_PASS="my_db_password",
+DB_HOST="localhost",
+DB_PORT="3333",
+```
 
-Ex:
-- **Bom**: `cpf`, `name`, `age`
-- **Ruim**: `endereco`, `posts`, `idade`
+### Installing
 
+**Cloning the Repository**
 
-## Foreign keys
+```
+$ git clone https://github.com/MateusZucco/Roster-Bot-Api.git
+$ cd roster-bot-api
+```
 
-Todas as foreign keys devem seguir o padrão `nome_da_tabela_no_singular_id`.
+**Installing dependencies**
 
-Por exemplo, caso a tabela `users` tenha um relacionameto com a tabela `roles`, o nome da coluna foreign key da tabela `users` deve ser `role_id`.
+```
+$ npm install
+```
+**Running the database's migrations**
+Go to sql path and run all archives in your database workbench
 
-## Primary keys
+### Running the Development environment
 
-A primary key de toda tabela deve ser uma coluna de inteiros com incremento automático, chamada `id`.
+With all dependencies installed, the Database running and the environment properly configured, you can now run the server:
 
-## Timestamps
+```
+$ npm run dev
+```
 
-Toda tabela deve definir duas colunas para colocar os timestamps: `created_at` e `updated_at`. A coluna `created_at` recebe automaticamente o timestamp do momento que o registro for criado. A coluna `updated_at` recebe automaticamente o timestamp do momento que o registro for alterado. 
+## Database
 
-## Referências
+The database ER model can be finded [here](https://dbdiagram.io/d/users_diagram-654324357d8bbd646551dba3)
 
-- http://guides.rubyonrails.org/active_record_basics.html#naming-conventions
-- https://laravel.com/docs/5.5/eloquent#defining-models
-- http://www.laravelbestpractices.com/#database_conventions
+#### Users
+
+> *user_id*: User's id.
+> *email*: User's email.
+> *password*: User's password.
+> *first_name*: User's first name.
+> *last_name*: User's last name.
+> *age*: User's age.
+> *status*: User's status [ativo/inativo].
+> *profile_id*: User's profile id.
+
+#### Profiles
+
+> *profile_id*: Profile's id.
+> *name*: Profile's name.
+> *description*: Profile's description.
+> *status*: Profile's status [ativo/inativo].
+
+#### Permissions
+
+> *permission_id*: Permission's id.
+> *description*: Permission's desription.
+
+### Relations
+  A User has one Profile
+  <br>
+  A Profile has many Users
+  <br>
+  A Profile has many Permissions
+  <br>
+  A Permission has many Profiles
+
+## Routes
+
+You can view the routes documentation in [Postman API Page](https://web.postman.co/workspace/My-Workspace~6bbc3165-e64c-4067-8180-d79a3b0491f3/documentation/29131359-e3275fda-5562-46a6-b4a7-1fe6490c25fb).
