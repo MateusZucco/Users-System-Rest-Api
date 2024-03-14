@@ -5,11 +5,11 @@ const connection = {
         if (global.connection && global.connection.state !== 'disconnected') return global.connection;
 
         const connection = await mysql.createConnection({
-            host: process.env.dbHost || 'localhost',
-            port: process.env.dbPort || '3333',
-            user: process.env.dbUser || 'root',
-            password: process.env.dbPass || 'root',
-            database: process.env.dbName || 'users_schema',
+            host: process.env.DB_HOST || 'localhost',
+            port: process.env.DB_PORT || '3333',
+            user: process.env.DB_USER || 'root',
+            password: process.env.DB_PASS || 'root',
+            database: process.env.DB_NAME || 'users_schema',
         });
 
         await connection.connect((err) => {
